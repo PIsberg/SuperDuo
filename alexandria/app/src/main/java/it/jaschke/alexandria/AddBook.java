@@ -109,7 +109,7 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
                     AddBook.this.restartLoader();
                 }
                 else { //13<
-                    Toast toast = Toast.makeText(getActivity(), "A valid ISBN number consists of only 13 digits", Toast.LENGTH_SHORT);
+                    Toast toast = Toast.makeText(getActivity(), R.string.isbn_validation_msg, Toast.LENGTH_SHORT);
                     toast.show();
                 }
             }
@@ -162,15 +162,15 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
 
         final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
 
-        alertDialogBuilder.setTitle("Download Barcodescanner");
+        alertDialogBuilder.setTitle(R.string.barcode_dialog_title);
 
-        alertDialogBuilder.setMessage("This application requires a barcodescanner. Would you like to donwnload one?");
-        alertDialogBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+        alertDialogBuilder.setMessage(R.string.barcode_dialog_msg);
+        alertDialogBuilder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialogInterface, int i) {
                 startDownloadBarcodeScanner();
             }
         });
-        alertDialogBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+        alertDialogBuilder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialogInterface, int i) {
                 // Do nothing
             }
