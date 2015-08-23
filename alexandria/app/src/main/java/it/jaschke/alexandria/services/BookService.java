@@ -159,6 +159,8 @@ public class BookService extends IntentService {
 
         // no result for example when no internet connection
         if(bookJsonString == null || bookJsonString.isEmpty()) {
+            Toast toast = Toast.makeText(this.getApplicationContext(), "No internet connection!", Toast.LENGTH_SHORT);
+            toast.show();
             return;
         }
             try {
