@@ -1,15 +1,20 @@
 package it.jaschke.alexandria;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,8 +53,20 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
         if(ean!=null) {
             outState.putString(EAN_CONTENT, ean.getText().toString());
         }
-    }
 
+    }
+    // after scanning is done
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        Log.d("AddBook", "onActivityResult requestCode:" + requestCode + ", resultCode:" + resultCode);
+
+        if (requestCode == 0) {
+            if(intent != null && intent.getStringExtra("SCAN_RESULT") != null) {
+                String scanContent = intent.getStringExtra("SCAN_RESULT");
+                String format = intent.getStringExtra("SCAN_RESULT_FORMAT");
+                ean.setText(scanContent);
+            }
+        }
+    }
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -90,19 +107,16 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
         rootView.findViewById(R.id.scan_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // This is the callback method that the system will invoke when your button is
-                // clicked. You might do this by launching another app or by including the
-                //functionality directly in this app.
-                // Hint: Use a Try/Catch block to handle the Intent dispatch gracefully, if you
-                // are using an external app.
-                //when you're done, remove the toast below.
-                Context context = getActivity();
-                CharSequence text = "This button should let you scan a book for its barcode!";
-                int duration = Toast.LENGTH_SHORT;
-
-                Toast toast = Toast.makeText(context, text, duration);
-                toast.show();
-
+                Log.d("Addbook", "onClick");
+                try {
+                    Intent intent = new Intent("com.google.zxing.client.android.SCAN");
+                    intent.putExtra("SCAN_MODE", "PRODUCT_MODE");
+                    startActivityForResult(intent, 0);
+                } catch (ActivityNotFoundException anfe) {
+                    //Toast toast = Toast.makeText(getActivity(), "No barcode scanner found", Toast.LENGTH_SHORT);
+                    //toast.show();
+                    showBarcodeScannerDownloadDialog();
+                }
             }
         });
 
@@ -130,6 +144,37 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
         }
 
         return rootView;
+    }
+
+
+    private void showBarcodeScannerDownloadDialog() {
+
+        final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+
+        alertDialogBuilder.setTitle("Download Barcodescanner");
+
+        alertDialogBuilder.setMessage("This application requires a barcodescanner. Would you like to donwnload one?");
+        alertDialogBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialogInterface, int i) {
+                startDownloadBarcodeScanner();
+            }
+        });
+        alertDialogBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialogInterface, int i) {
+                // Do nothing
+            }
+        });
+
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+    }
+
+    private void startDownloadBarcodeScanner() {
+        Uri uri = Uri.parse("market://search?q=pname:" + "com.google.zxing.client.android");
+        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+        try {
+            getActivity().startActivity(intent);
+        } catch (ActivityNotFoundException anfe) {}
     }
 
     private void restartLoader(){
