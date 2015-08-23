@@ -1,6 +1,10 @@
 # Windows image file caches
 Thumbs.db
 ehthumbs.db
+.idea
+alexandria/.idea
+alexandria/gradle.properties
+Football_Scores-master/.idea
 
 # Folder config file
 Desktop.ini
