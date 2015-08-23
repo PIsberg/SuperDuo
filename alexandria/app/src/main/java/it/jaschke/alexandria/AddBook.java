@@ -86,21 +86,32 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
 
             @Override
             public void afterTextChanged(Editable s) {
-                String ean =s.toString();
+                String ean = s.toString();
+
+                boolean hasValidISBN = false;
+
                 //catch isbn10 numbers
                 if(ean.length()==10 && !ean.startsWith("978")){
                     ean="978"+ean;
+                    hasValidISBN = true;
                 }
+
                 if(ean.length()<13){
-                    clearFields();
                     return;
                 }
                 //Once we have an ISBN, start a book intent
-                Intent bookIntent = new Intent(getActivity(), BookService.class);
-                bookIntent.putExtra(BookService.EAN, ean);
-                bookIntent.setAction(BookService.FETCH_BOOK);
-                getActivity().startService(bookIntent);
-                AddBook.this.restartLoader();
+                if(hasValidISBN) {
+                    clearFields();
+                    Intent bookIntent = new Intent(getActivity(), BookService.class);
+                    bookIntent.putExtra(BookService.EAN, ean);
+                    bookIntent.setAction(BookService.FETCH_BOOK);
+                    getActivity().startService(bookIntent);
+                    AddBook.this.restartLoader();
+                }
+                else { //13<
+                    Toast toast = Toast.makeText(getActivity(), "A valid ISBN number consists of only 13 digits", Toast.LENGTH_SHORT);
+                    toast.show();
+                }
             }
         });
 
