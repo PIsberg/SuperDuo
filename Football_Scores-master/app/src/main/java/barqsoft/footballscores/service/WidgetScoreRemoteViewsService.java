@@ -1,7 +1,6 @@
 package barqsoft.footballscores.service;
 
 
-import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.content.ContentResolver;
 import android.content.Context;
