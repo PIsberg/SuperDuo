@@ -25,8 +25,6 @@ import barqsoft.footballscores.service.myFetchService;
 public class ScoresWidget extends AppWidgetProvider {
     public final String LOG_TAG = this.getClass().getName();
 
-    public static final String TOAST_ACTION="toastAcition";
-
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
 
@@ -49,7 +47,7 @@ public class ScoresWidget extends AppWidgetProvider {
     }
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.v(LOG_TAG, "onReceive");
+            //Log.v(LOG_TAG, "onReceive");
             super.onReceive(context, intent);
             if (myFetchService.REFRESH_SCORE_DATA.equals(intent.getAction())) {
                 Log.v(LOG_TAG, "REFRESH_SCORE_DATA");
@@ -57,6 +55,7 @@ public class ScoresWidget extends AppWidgetProvider {
                 AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
                 ComponentName componentName = new ComponentName(context, getClass());
                 int[] appWidgetIds = appWidgetManager.getAppWidgetIds(componentName);
+                Log.v(LOG_TAG, "appWidgetIds" + appWidgetIds.length);
                 appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.scores_list);
 
             }
