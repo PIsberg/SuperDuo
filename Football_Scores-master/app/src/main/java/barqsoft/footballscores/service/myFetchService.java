@@ -1,6 +1,7 @@
 package barqsoft.footballscores.service;
 
 import android.app.IntentService;
+import android.appwidget.AppWidgetManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -24,6 +25,7 @@ import java.util.Vector;
 
 import barqsoft.footballscores.DatabaseContract;
 import barqsoft.footballscores.R;
+import barqsoft.footballscores.widget.ScoresWidget;
 
 /**
  * Created by yehya khaled on 3/2/2015.
@@ -31,8 +33,6 @@ import barqsoft.footballscores.R;
 public class myFetchService extends IntentService
 {
     public static final String LOG_TAG = "myFetchService";
-
-    public static final String REFRESH_SCORE_DATA = "refresh_score_data";
 
     public myFetchService()
     {
@@ -122,10 +122,8 @@ public class myFetchService extends IntentService
                     processJSONdata(getString(R.string.dummy_data), getApplicationContext(), false);
                     return;
                 }
-
-
                 processJSONdata(JSON_data, getApplicationContext(), true);
-            } else {
+           } else {
                 //Could not Connect
                 Log.d(LOG_TAG, "Could not connect to server.");
             }
@@ -264,7 +262,10 @@ public class myFetchService extends IntentService
             inserted_data = mContext.getContentResolver().bulkInsert(
                     DatabaseContract.BASE_CONTENT_URI,insert_data);
             if(inserted_data > 0) {
-                sendBroadcast(new Intent(REFRESH_SCORE_DATA));
+                //Notify widget that data has changed
+                Intent updateWidgetDataIntent = new Intent(getApplicationContext(), ScoresWidget.class);
+                updateWidgetDataIntent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+                getApplicationContext().sendBroadcast(updateWidgetDataIntent);
             }
             //Log.v(LOG_TAG,"Succesfully Inserted : " + String.valueOf(inserted_data));
         }

@@ -34,7 +34,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:dividerHeight="0dp"
-                tools:listitem="@layout/widget_item_score" />
+                tools:listitem="@layout/widget_scores_item" />
 
             <TextView
                 android:id="@+id/no_scores"

@@ -1,7 +1,6 @@
 package barqsoft.footballscores.service;
 
 
-import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -19,6 +18,7 @@ import java.util.List;
 import barqsoft.footballscores.DatabaseContract;
 import barqsoft.footballscores.R;
 import barqsoft.footballscores.model.WidgetFootballScoreData;
+import barqsoft.footballscores.widget.ScoresWidget;
 
 public class WidgetScoreRemoteViewsService extends RemoteViewsService {
 
@@ -78,6 +78,13 @@ class WidgetScoreRemoteViewsFactory implements RemoteViewsService.RemoteViewsFac
         return strDate;
     }
 
+    public static String getCurrentTime() {
+        SimpleDateFormat sdfDate = new SimpleDateFormat("hh");
+        Date now = new Date();
+        String strDate = sdfDate.format(now);
+        return strDate;
+    }
+    // load all matches from today in order of beeing played
     private Cursor loadData(String dateyyMMdd) {
 
         Cursor cursor = contentResolver.query(DatabaseContract.scores_table.buildScoreWithDate(),
@@ -93,16 +100,19 @@ class WidgetScoreRemoteViewsFactory implements RemoteViewsService.RemoteViewsFac
 
     private List<WidgetFootballScoreData> mapScoreData(Cursor cursor) {
         List<WidgetFootballScoreData> footballScoreData = new ArrayList<>();
+        int numberOfPosts = 0;
         if(cursor != null && cursor.getCount() > 0) {
-            Log.d(LOG_TAG, "Number of posts found: " + cursor.getCount());
-
+            numberOfPosts = cursor.getCount();
             cursor.moveToFirst();
+
             while (!cursor.isAfterLast()) {
                 WidgetFootballScoreData data = WidgetFootballScoreData.mapCursor(cursor);
+                //TODO: possible improvement. don't add matches that has already started played data.getMatchTime()
                 footballScoreData.add(data);
                 cursor.moveToNext();
             }
         }
+        Log.d(LOG_TAG, "Number of posts found: " + cursor.getCount());
         return footballScoreData;
     }
 
