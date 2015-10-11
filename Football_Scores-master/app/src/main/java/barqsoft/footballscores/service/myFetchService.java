@@ -31,6 +31,9 @@ import barqsoft.footballscores.R;
 public class myFetchService extends IntentService
 {
     public static final String LOG_TAG = "myFetchService";
+
+    public static final String REFRESH_SCORE_DATA = "refresh_score_data";
+
     public myFetchService()
     {
         super("myFetchService");
@@ -135,11 +138,18 @@ public class myFetchService extends IntentService
     private void processJSONdata (String JSONdata,Context mContext, boolean isReal)
     {
         //JSON data
-        final String SERIE_A = "357";
-        final String PREMIER_LEGAUE = "354";
-        final String CHAMPIONS_LEAGUE = "362";
-        final String PRIMERA_DIVISION = "358";
-        final String BUNDESLIGA = "351";
+        final String BUNDESLIGA1 = "394";
+        final String BUNDESLIGA2 = "395";
+        final String LIGUE1 = "396";
+        final String LIGUE2 = "397";
+        final String PREMIER_LEAGUE = "398";
+        final String PRIMERA_DIVISION = "399";
+        final String SEGUNDA_DIVISION = "400";
+        final String SERIE_A = "401";
+        final String PRIMERA_LIGA = "402";
+        final String Bundesliga3 = "403";
+        final String EREDIVISIE = "404";
+
         final String SEASON_LINK = "http://api.football-data.org/alpha/soccerseasons/";
         final String MATCH_LINK = "http://api.football-data.org/alpha/fixtures/";
         final String FIXTURES = "fixtures";
@@ -178,12 +188,15 @@ public class myFetchService extends IntentService
                 League = match_data.getJSONObject(LINKS).getJSONObject(SOCCER_SEASON).
                         getString("href");
                 League = League.replace(SEASON_LINK,"");
-                if(     League.equals(PREMIER_LEGAUE)      ||
+
+                /* //outcommented since any data will do
+                if (League.equals(PREMIER_LEAGUE)      ||
                         League.equals(SERIE_A)             ||
-                        League.equals(CHAMPIONS_LEAGUE)    ||
-                        League.equals(BUNDESLIGA)          ||
-                        League.equals(PRIMERA_DIVISION)     )
+                        League.equals(BUNDESLIGA1)         ||
+                        League.equals(BUNDESLIGA2)         ||
+                        League.equals(PRIMERA_DIVISION))
                 {
+                */
                     match_id = match_data.getJSONObject(LINKS).getJSONObject(SELF).
                             getString("href");
                     match_id = match_id.replace(MATCH_LINK, "");
@@ -243,14 +256,16 @@ public class myFetchService extends IntentService
                     //Log.v(LOG_TAG,Away_goals);
 
                     values.add(match_values);
-                }
+                //}
             }
             int inserted_data = 0;
             ContentValues[] insert_data = new ContentValues[values.size()];
             values.toArray(insert_data);
             inserted_data = mContext.getContentResolver().bulkInsert(
                     DatabaseContract.BASE_CONTENT_URI,insert_data);
-
+            if(inserted_data > 0) {
+                sendBroadcast(new Intent(REFRESH_SCORE_DATA));
+            }
             //Log.v(LOG_TAG,"Succesfully Inserted : " + String.valueOf(inserted_data));
         }
         catch (JSONException e)

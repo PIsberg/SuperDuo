@@ -3,7 +3,7 @@
     android:layout_width="150dip"
     android:layout_height="150dip"
     android:minWidth="146dip"
-    android:minHeight="72dip"
+    android:minHeight="150dip"
     android:updatePeriodMillis="1000"
-    android:initialLayout="@layout/activity_main"
+    android:initialLayout="@layout/widget_scores_layout"
 /> 

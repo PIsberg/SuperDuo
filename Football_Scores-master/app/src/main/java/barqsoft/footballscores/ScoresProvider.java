@@ -7,17 +7,20 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
+import android.util.Log;
 
 /**
  * Created by yehya khaled on 2/25/2015.
  */
 public class ScoresProvider extends ContentProvider
 {
+    public final String LOG_TAG = this.getClass().getName();
+
     private static ScoresDBHelper mOpenHelper;
     private static final int MATCHES = 100;
-    private static final int MATCHES_WITH_LEAGUE = 101;
-    private static final int MATCHES_WITH_ID = 102;
-    private static final int MATCHES_WITH_DATE = 103;
+    public static final int MATCHES_WITH_LEAGUE = 101;
+    public static final int MATCHES_WITH_ID = 102;
+    public static final int MATCHES_WITH_DATE = 103;
     private UriMatcher muriMatcher = buildUriMatcher();
     private static final SQLiteQueryBuilder ScoreQuery =
             new SQLiteQueryBuilder();
@@ -96,11 +99,11 @@ public class ScoresProvider extends ContentProvider
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder)
     {
         Cursor retCursor;
-        //Log.v(FetchScoreTask.LOG_TAG,uri.getPathSegments().toString());
+        Log.v(LOG_TAG, uri.getPathSegments().toString());
         int match = match_uri(uri);
-        //Log.v(FetchScoreTask.LOG_TAG,SCORES_BY_LEAGUE);
-        //Log.v(FetchScoreTask.LOG_TAG,selectionArgs[0]);
-        //Log.v(FetchScoreTask.LOG_TAG,String.valueOf(match));
+        Log.v(LOG_TAG,SCORES_BY_LEAGUE);
+        Log.v(LOG_TAG,selectionArgs[0]);
+        Log.v(LOG_TAG,String.valueOf(match));
         switch (match)
         {
             case MATCHES: retCursor = mOpenHelper.getReadableDatabase().query(
