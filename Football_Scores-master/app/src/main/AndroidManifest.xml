@@ -4,13 +4,15 @@
 
     <uses-permission
         android:name="android.permission.INTERNET"
+        android:minSdkVersion="17"
         android:maxSdkVersion="22" />
 
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme"
+        android:supportsRtl="true"> <!-- Setting to allow support layout mirroring which means support for languages that write from right to left in e.g text fields -->
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name" >
