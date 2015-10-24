@@ -91,7 +91,7 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
                 boolean hasValidISBN = false;
 
                 //catch isbn10 numbers
-                if(ean.length()==10 && !ean.startsWith("978")){
+                if(ean.length()==10){
                     ean="978"+ean;
                     hasValidISBN = true;
                 }
@@ -224,9 +224,19 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
         ((TextView) rootView.findViewById(R.id.bookSubTitle)).setText(bookSubTitle);
 
         String authors = data.getString(data.getColumnIndex(AlexandriaContract.AuthorEntry.AUTHOR));
-        String[] authorsArr = authors.split(",");
-        ((TextView) rootView.findViewById(R.id.authors)).setLines(authorsArr.length);
-        ((TextView) rootView.findViewById(R.id.authors)).setText(authors.replace(",","\n"));
+
+        int numberOfAuthors = 1;
+        String formattedAuthors = "NO AUTHORS";
+
+        if(authors != null) {
+            String[] authorsArr = authors.split(",");
+            numberOfAuthors = authorsArr.length;
+            formattedAuthors = authors.replace(",", "\n");
+        }
+
+        ((TextView) rootView.findViewById(R.id.authors)).setLines(numberOfAuthors);
+        ((TextView) rootView.findViewById(R.id.authors)).setText(formattedAuthors);
+
         String imgUrl = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.IMAGE_URL));
         if(Patterns.WEB_URL.matcher(imgUrl).matches()){
             new DownloadImage((ImageView) rootView.findViewById(R.id.bookCover)).execute(imgUrl);
