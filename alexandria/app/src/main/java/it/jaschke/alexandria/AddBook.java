@@ -90,9 +90,12 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
 
                 boolean hasValidISBN = false;
 
-                //catch isbn10 numbers
+                //catch isbn10 or isbn13 numbers
                 if(ean.length()==10){
                     ean="978"+ean;
+                    hasValidISBN = true;
+                }
+                else if( ean.length()== 13) {
                     hasValidISBN = true;
                 }
 
